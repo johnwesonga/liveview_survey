@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <.live_title default="Survey" suffix=" · Phoenix Framework">
+      {assigns[:page_title]}
+    </.live_title>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/js/app.js"}>
+    </script>
+    <script>
+      (() => {
+        const setTheme = (theme) => {
+          if (theme === "system") {
+            localStorage.removeItem("phx:theme");
+            document.documentElement.removeAttribute("data-theme");
+          } else {
+            localStorage.setItem("phx:theme", theme);
+            document.documentElement.setAttribute("data-theme", theme);
+          }
+        };
+        setTheme(localStorage.getItem("phx:theme") || "system");
+        window.addEventListener("storage", (e) => e.key === "phx:theme" && setTheme(e.newValue || "system"));
+        window.addEventListener("phx:set-theme", ({ detail: { theme } }) => setTheme(theme));
+      })();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js">
+    </script>
+  </head>
+  <body>
+    <.navbar id="nav-11" color="info" variant="default">
+      <:start_content>
+        <.link
+          navigate={~p"/"}
+          class="flex items-center space-x-3 rtl:space-x-reverse mb-5 md:mb-0"
+        >
+          <.icon name="hero-home" class="h-6 w-6" /> Home
+        </.link>
+      </:start_content>
+      <:list>
+        <.link navigate={~p"/polls"} class="text-white
+        ml-4">
+          <.icon name="hero-building-office-2" class="h-6 w-6" /> Polls
+        </.link>
+      </:list>
+      <:list>
+        <.link navigate={~p"/polls/new"} class="text-white
+        ml-4">
+          <.icon name="hero-building-office-2" class="h-6 w-6" /> New Poll
+        </.link>
+      </:list>
+    </.navbar>
+
+    {@inner_content}
+  </body>
+</html>
