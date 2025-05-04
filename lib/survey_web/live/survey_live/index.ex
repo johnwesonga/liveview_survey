@@ -57,7 +57,7 @@ defmodule SurveyWeb.SurveyLive.Index do
                   {poll.title}
                 </.link>
               </:col>
-              <:col :let={poll} label="Description" class="text-gray-400 mb-4">
+              <:col :let={poll} label="Description">
                 <p class="text-gray-400 mb-4">
                   {poll.description}
                 </p>
