@@ -12,36 +12,23 @@ defmodule SurveyWeb.SurveyLive.ShowPoll do
     {:ok, assign(socket, poll: poll, changeset: changeset, poll_id: poll_id, error_message: nil)}
   end
 
-  def handle_event("validate", %{"response" => %{"answers" => answers_params}}, socket) do
-    changeset = PollAdmin.change_response(%Response{}, answers_params)
+  def handle_event("validate", %{"response" => params}, socket) do
+    # Validate the answers without saving
+    # answers = cleanup_params(answers_params)
+    changeset = PollAdmin.change_response(%Response{}, params)
     error_message = if changeset.valid?, do: nil, else: "Please fix the errors below."
     {:noreply, assign(socket, changeset: changeset, error_message: error_message)}
   end
 
   @impl true
   def handle_event("save", %{"response" => %{"answers" => answers_params}}, socket) do
-    poll_id = socket.assigns.poll_id |> dbg()
+    poll_id = socket.assigns.poll_id
 
     answers_params |> dbg()
 
     answers =
       answers_params
-      |> Map.values()
-      |> Enum.map(fn %{"question_id" => qid} = answer ->
-        cond do
-          is_list(answer["choice_id"]) ->
-            Enum.map(answer["choice_id"], fn cid ->
-              %{question_id: qid, choice_id: cid}
-            end)
-
-          answer["choice_id"] ->
-            [%{question_id: qid, choice_id: answer["choice_id"]}]
-
-          answer["free_text"] ->
-            [%{question_id: qid, free_text: answer["free_text"]}]
-        end
-      end)
-      |> List.flatten()
+      |> cleanup_params()
 
     answers |> dbg()
     # Create the response with the answers
@@ -59,6 +46,26 @@ defmodule SurveyWeb.SurveyLive.ShowPoll do
         IO.inspect(changeset.errors, label: "Changeset Errors")
         IO.inspect(changeset.valid?, label: "Is Changeset Valid?")
     end
+  end
+
+  defp cleanup_params(params) do
+    params
+    |> Map.values()
+    |> Enum.map(fn %{"question_id" => qid} = answer ->
+      cond do
+        is_list(answer["choice_id"]) ->
+          Enum.map(answer["choice_id"], fn cid ->
+            %{question_id: qid, choice_id: cid}
+          end)
+
+        answer["choice_id"] ->
+          [%{question_id: qid, choice_id: answer["choice_id"]}]
+
+        answer["free_text"] ->
+          [%{question_id: qid, free_text: answer["free_text"]}]
+      end
+    end)
+    |> List.flatten()
   end
 
   @impl true
