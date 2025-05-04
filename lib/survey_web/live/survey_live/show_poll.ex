@@ -80,7 +80,7 @@ defmodule SurveyWeb.SurveyLive.ShowPoll do
         <p class="text-sm text-gray-500 mb-4">
           Status: {@poll.status |> Atom.to_string() |> String.capitalize()}
         </p>
-        <.form for={@changeset} phx-submit="save" phx-change="validate">
+        <.form for={@changeset} phx-submit="save">
           <%= if @error_message do %>
             <div class="bg-red-50 p-4 rounded-md mb-4">
               <div class="flex">

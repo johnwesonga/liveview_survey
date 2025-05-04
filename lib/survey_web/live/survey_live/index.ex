@@ -57,7 +57,11 @@ defmodule SurveyWeb.SurveyLive.Index do
                   {poll.title}
                 </.link>
               </:col>
-              <:col :let={poll} label="Description">{poll.description}</:col>
+              <:col :let={poll} label="Description" class="text-gray-400 mb-4">
+                <p class="text-gray-400 mb-4">
+                  {poll.description}
+                </p>
+              </:col>
               <:col :let={poll} label="Status">
                 {poll.status |> Atom.to_string() |> String.capitalize()}
               </:col>

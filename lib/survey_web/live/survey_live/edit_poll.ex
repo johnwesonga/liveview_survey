@@ -66,6 +66,16 @@ defmodule SurveyWeb.SurveyLive.EditPoll do
               class="w-full"
             />
           </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">Status</label>
+            <select name="poll[status]" required>
+              <%= for {status, value} <- @poll_status do %>
+                <option value={value} selected={poll.data.status == value}>
+                  {String.capitalize(status)}
+                </option>
+              <% end %>
+            </select>
+          </div>
           <div class="border-t border-gray-200 pt-6">
             <h3 class="text-lg font-medium text-gray-900">Questions</h3>
             <p class="mt-1 text-sm text-gray-500">Create one or more questions for your poll.</p>
@@ -78,10 +88,20 @@ defmodule SurveyWeb.SurveyLive.EditPoll do
                   type="text"
                   name="poll[questions][question_text]"
                   value={poll_questions.data.question_text}
-                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   required
                 />
               </div>
+              <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700">Question Type</label>
+                <select name="poll[questions][question_type_id]" required>
+                  <%= for {type, id} <- @question_types do %>
+                    <option value={id} selected={poll_questions.data.question_type_id == id}>
+                      {String.capitalize(type)}
+                    </option>
+                  <% end %>
+                </select>
+              </div>
+              <!-- Choices -->
               <div id="choices" class="mb-4">
                 <h4 class="text-sm font-medium text-gray-700">Choices</h4>
                 <.inputs_for :let={choices} field={poll_questions[:choices]}>
