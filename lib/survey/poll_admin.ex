@@ -41,7 +41,6 @@ defmodule Survey.PollAdmin do
   def get_poll!(id) do
     Poll
     |> Repo.get!(id)
-    |> Repo.preload(:questions)
     |> Repo.preload(questions: [:choices, :question_type])
   end
 
