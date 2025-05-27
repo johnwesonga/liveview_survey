@@ -22,7 +22,8 @@ defmodule Survey.PollAdmin.Poll do
     |> cast_assoc(:questions,
       with: &Survey.PollAdmin.Question.changeset/2,
       sort_param: :questions_sort,
-      drop_param: :questions_drop
+      drop_param: :questions_drop,
+      required: true
     )
   end
 end

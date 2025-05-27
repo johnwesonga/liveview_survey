@@ -1,4 +1,5 @@
 defmodule SurveyWeb.SurveyLive.ShowPoll do
+  alias Survey.PollAdmin.Answer
   use SurveyWeb, :live_view
 
   alias Survey.PollAdmin
@@ -13,9 +14,19 @@ defmodule SurveyWeb.SurveyLive.ShowPoll do
   end
 
   def handle_event("validate", %{"response" => params}, socket) do
+    params |> dbg()
+    _poll_id = socket.assigns.poll_id
+
+    changeset =
+      %Answer{}
+      |> PollAdmin.change_answer(params)
+      |> Map.put(:action, :validate)
+
+    # {:noreply, socket}
+    # Fetch the poll to ensure it exists
     # Validate the answers without saving
     # answers = cleanup_params(answers_params)
-    changeset = PollAdmin.change_response(%Response{}, params)
+    # changeset = PollAdmin.change_response(%Response{}, params)
     error_message = if changeset.valid?, do: nil, else: "Please fix the errors below."
     {:noreply, assign(socket, changeset: changeset, error_message: error_message)}
   end
@@ -42,9 +53,6 @@ defmodule SurveyWeb.SurveyLive.ShowPoll do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
-        IO.inspect(changeset, label: "Changeset Error")
-        IO.inspect(changeset.errors, label: "Changeset Errors")
-        IO.inspect(changeset.valid?, label: "Is Changeset Valid?")
     end
   end
 

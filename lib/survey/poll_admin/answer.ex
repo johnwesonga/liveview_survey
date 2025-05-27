@@ -17,11 +17,7 @@ defmodule Survey.PollAdmin.Answer do
     |> cast(attrs, [:free_text, :choice_id, :question_id])
     |> validate_choice_or_text()
     |> validate_required([:question_id])
-
-    # |> foreign_key_constraint(:choice_id)
     |> foreign_key_constraint(:question_id)
-
-    # |> foreign_key_constraint(:response_id)
   end
 
   # Custom validation: either choice or free_text must be present

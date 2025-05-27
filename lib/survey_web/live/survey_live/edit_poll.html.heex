@@ -1,0 +1,91 @@
+<div class="max-w-4xl mx-auto py-8 px-4">
+  <h1 class="text-3xl font-bold mb-6">Edit Poll</h1>
+  <div class="bg-white shadow-md rounded-lg p-6">
+    <.form :let={poll} for={@changeset} phx-submit="save">
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Title</label>
+        <.input
+          type="text"
+          name="poll[title]"
+          value={poll.data.title}
+          class="block w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+          required
+        />
+      </div>
+      <div class="mb-4">
+        <.input
+          name="poll[description]"
+          type="textarea"
+          label="Description"
+          value={poll.data.description}
+          class="w-full"
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Status</label>
+        <select name="poll[status]" required>
+          <%= for {status, value} <- @poll_status do %>
+            <option value={value} selected={poll.data.status == value}>
+              {String.capitalize(status)}
+            </option>
+          <% end %>
+        </select>
+      </div>
+      <div class="border-t border-gray-200 pt-6">
+        <h3 class="text-lg font-medium text-gray-900">Questions</h3>
+        <p class="mt-1 text-sm text-gray-500">Create one or more questions for your poll.</p>
+      </div>
+      <div id="questions" class="mt-6">
+        <.inputs_for :let={poll_questions} field={poll[:questions]}>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">Question Text</label>
+            <.input
+              type="text"
+              name="poll[questions][question_text]"
+              value={poll_questions.data.question_text}
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">Question Type</label>
+            <select
+              name="poll[questions][question_type_id]"
+              required
+              class="rounded-lg border border-gray-300 bg-white px-4 py-2 pr-10 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+              <%= for {type, id} <- @question_types do %>
+                <option value={id} selected={poll_questions.data.question_type_id == id}>
+                  {String.capitalize(type)}
+                </option>
+              <% end %>
+            </select>
+          </div>
+          <!-- Choices -->
+          <div id="choices" class="mb-4">
+            <h4 class="text-sm font-medium text-gray-700">Choices</h4>
+            <.inputs_for :let={choices} field={poll_questions[:choices]}>
+              <div class="flex items-center mb-2">
+                <.input
+                  type="text"
+                  name="poll[questions][choices][choice_text]"
+                  value={choices.data.choice_text}
+                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  required
+                />
+              </div>
+            </.inputs_for>
+          </div>
+        </.inputs_for>
+      </div>
+
+      <div class="flex justify-end">
+        <button
+          type="submit"
+          class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Save Changes
+        </button>
+      </div>
+    </.form>
+  </div>
+</div>

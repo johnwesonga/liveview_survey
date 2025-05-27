@@ -18,6 +18,10 @@ defmodule SurveyWeb.SurveyLive.NewPoll do
       PollAdmin.list_question_types()
       |> Enum.map(&{&1.question_type, &1.id})
 
+    _filter_dropdown =
+      %{"active" => "Active", "draft" => "Draft", "closed" => "Closed"}
+      |> Enum.map(fn {key, value} -> {key, value} end)
+
     {:ok,
      socket
      |> assign(changeset: changeset)
